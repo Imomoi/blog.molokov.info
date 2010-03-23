@@ -14,8 +14,8 @@ h3. Подготовка
 <notextile>
 <pre lang="DOS">
 C:\>gem install nokogiri
-[разные сообщения об установке]
-C:\>gem list | findstr "noko"
+[разные сообщения]
+C:\>gem list | findstr "nokogiri"
 nokogiri (1.4.1)
 </pre>
 </notextile>
@@ -32,12 +32,19 @@ nokogiri (1.4.1)
 
 <notextile>
 <pre lang="bash">
+Здесь будет инструкция для Ubuntu
 </pre>
 </notextile>
+
+h3. Модификация приложения
 
 <notextile>
 <pre lang="rails">ActiveSupport::XmlMini.backend = 'Nokogiri'</pre>
 </notextile>
+
+h3. Тестовое сравнение
+
+
 
 h3. Полезные ссылки
 
