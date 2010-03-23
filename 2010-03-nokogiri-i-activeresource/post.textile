@@ -3,13 +3,13 @@
 
 h3. Введение
 
-﻿Для WEB-приложений, активно использующих ActiveResource[1] (потребители различных web-сервисов),
+Для WEB-приложений, активно использующих ActiveResource[1] (потребители различных web-сервисов),
 типичной проблемой является скорость обработки XML-ответа. В фреймворке Ruby on Rails она
 решается очень просто и элегантно.
 
 h3. Подготовка
 
-Основным узким местом является основанный на Ruby парсер reXML, который используется
+Основным узким местом является основанный на Ruby XML-парсер reXML, который используется
 в ActiveResource по-умолчанию. Для повышения скорости обработки XML-документов мы
 заменим его на библиотеку Nokogiri[2].
 
@@ -25,7 +25,6 @@ nokogiri (1.4.1)
 </pre>
 </notextile>
 
-
 Для GNU/Linux могут потребоваться дополнительные библиотеки:
 
 * libxml2
@@ -33,7 +32,7 @@ nokogiri (1.4.1)
 * libxslt
 * libxslt-dev
 
-Установка Nokogiri для убунту Ubuntu
+Установка Nokogiri для Ubuntu
 
 <notextile>
 <pre lang="bash">
@@ -52,6 +51,46 @@ h3. Тестовое сравнение
 Для сравнения скорости обработки ответов от внешнего сервера можно использовать приложение-поставщик[3]
 и приложение-потребителя[4].
 
+Настраиваем и запускаем поставщик:
+
+<notextile>
+<pre lang="bash">
+cd remote-server
+rake db:create
+rake db:migrate
+rake db:seed
+ruby script/server -p 50000
+</pre>
+</notextile>
+
+Во второй консоли настраиваем и запускаем тест производительности:
+
+<notextile>
+<pre lang="bash">
+cd server
+rake db:create
+rake db:migrate
+rake test:benchmark
+</pre>
+</notextile>
+
+Результат тестового запуска:
+
+<notextile>
+<pre lang="bash">
+  вставить вывод
+</pre>
+</notextile>
+
+Для нас интересно значение wall_time, которое представляет собой время выполнения одного запроса.
+В это время входит:
+
+# Запрос к удаленному серверу
+# Запрос базы данных на удаленном сервере
+# Формирование XML-ответа
+# Передача XML-ответа
+# Разбор XML-ответа
+
 
 
 h3. Полезные ссылки
@@ -60,6 +99,6 @@ fn1. "Документация по ActiveResource":http://api.rubyonrails.org/c
 
 fn2. "Библиотека Nokogiri":http://nokogiri.org/
 
-fn3. Исходные коды приложения-поставщика
+fn3. "Исходные коды приложения-поставщика":http://github.com/Imomoi/blog.molokov.info/tree/master/2010-03-nokogiri-i-activeresource/remote-server/
 
-fn4. Исходные коды приложения-потребителя
+fn4. "Исходные коды приложения-потребителя":http://github.com/Imomoi/blog.molokov.info/tree/master/2010-03-nokogiri-i-activeresource/server
