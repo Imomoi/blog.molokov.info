@@ -1,0 +1,46 @@
+Для WEB-приложений, активно использующих ActiveResource[1] (потребители различных web-сервисов),
+типичной проблемой является скорость обработки XML-ответа. В фреймворке Ruby on Rail она
+решается очень просто и элегантно.
+
+h3. Подготовка
+
+Основным узким местом является основанный на Ruby парсер reXML, который используется
+в ActiveResource по-умолчанию. Для повышения скорости обработки XML-документов мы
+заменим его на библиотеку Nokogiri[2].
+
+
+Установка gem'а Nokogiri для Windows производится командой:
+
+<notextile>
+<pre lang="DOS">
+C:\>gem install nokogiri
+[разные сообщения об установке]
+C:\>gem list | findstr "noko"
+nokogiri (1.4.1)
+</pre>
+</notextile>
+
+
+Для GNU/Linux могут потребоваться дополнительные библиотеки:
+
+* libxml2
+* libxml2-dev
+* libxslt
+* libxslt-dev
+
+Установка Nokogiri для убунту Ubuntu
+
+<notextile>
+<pre lang="bash">
+</pre>
+</notextile>
+
+<notextile>
+<pre lang="rails">ActiveSupport::XmlMini.backend = 'Nokogiri'</pre>
+</notextile>
+
+h3. Полезные ссылки
+
+fn1. "Документация по ActiveResource":http://api.rubyonrails.org/classes/ActiveResource/Base.html
+
+fn2. "Библиотека Nokogiri":http://nokogiri.org/

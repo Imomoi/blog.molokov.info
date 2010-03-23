@@ -1,0 +1,13 @@
+== Зависимости
+
+Для работы сервера необходима библиотека sqlite3-ruby
+
+    sudo gem install sqlite3-ruby
+
+== Начальная настройка и запуск
+
+    rake db:create:all
+    rake db:migrate RAILS_ENV=production
+    rake db:seed RAILS_ENV=production
+    ruby script/server -e production -p 50000
+
