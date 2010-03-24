@@ -18,9 +18,9 @@ h3. Подготовка
 
 <notextile>
 <pre lang="DOS">
-C:\&rquo; gem install nokogiri
+C:\> gem install nokogiri
 [разные сообщения]
-C:\&rquo; gem list | findstr "nokogiri"
+C:\> gem list | findstr "nokogiri"
 nokogiri (1.4.1)
 </pre>
 </notextile>
