@@ -1,10 +1,15 @@
-﻿Для WEB-приложений, активно использующих ActiveResource[1] (потребители различных web-сервисов),
-типичной проблемой является скорость обработки XML-ответа. В фреймворке Ruby on Rail она
+﻿В этой статье будет рассмотрен один из вариантов увеличения быстродействия WEB-приложений,
+основанных на ActiveResource, с помощью библиотеки Nokogiri.
+
+h3. Введение
+
+Для WEB-приложений, активно использующих ActiveResource[1] (потребители различных web-сервисов),
+типичной проблемой является скорость обработки XML-ответа. В фреймворке Ruby on Rails она
 решается очень просто и элегантно.
 
 h3. Подготовка
 
-Основным узким местом является основанный на Ruby парсер reXML, который используется
+Основным узким местом является основанный на Ruby XML-парсер reXML, который используется
 в ActiveResource по-умолчанию. Для повышения скорости обработки XML-документов мы
 заменим его на библиотеку Nokogiri[2].
 
@@ -13,13 +18,12 @@ h3. Подготовка
 
 <notextile>
 <pre lang="DOS">
-C:\>gem install nokogiri
-[разные сообщения об установке]
-C:\>gem list | findstr "noko"
+C:\&rquo; gem install nokogiri
+[разные сообщения]
+C:\&rquo; gem list | findstr "nokogiri"
 nokogiri (1.4.1)
 </pre>
 </notextile>
-
 
 Для GNU/Linux могут потребоваться дополнительные библиотеки:
 
@@ -28,19 +32,114 @@ nokogiri (1.4.1)
 * libxslt
 * libxslt-dev
 
-Установка Nokogiri для убунту Ubuntu
+Установка Nokogiri для Ubuntu
 
 <notextile>
 <pre lang="bash">
+sudo apt-get install libxml2-dev libxslt-dev
+sudo gem install nokogiri
+gem list | grep nokogiri
+nokogiri (1.4.1)
 </pre>
 </notextile>
+
+h3. Модификация приложения
+
+Все что требуется от разработчика -- это указать XmlMini обертку, которую Rails будет использовать
+для разбора XML-ответов.
+
+Для этого в одном из следующих файлов
+
+* @config/environment.rb@ -- изменения будут действительны для всех окружений
+* @config/environments/development.rb@ -- будет применяться только в окружении "development"
+* @config/environments/production.rb@ -- будет применять только в окружении "production"
+* @config/environments/_другое окружение_.rb@ -- будет применяться в любом другом окружении
+
+необходимо добавить строку:
 
 <notextile>
 <pre lang="rails">ActiveSupport::XmlMini.backend = 'Nokogiri'</pre>
 </notextile>
+
+Это все, что нужно сделать.
+
+h3. Тестовое сравнение
+
+Для сравнения скорости обработки ответов от внешнего сервера можно использовать приложение-поставщик[3]
+и приложение-потребителя[4].
+
+Настраиваем и запускаем поставщик:
+
+<notextile>
+<pre lang="bash">
+cd remote-server
+rake db:create
+rake db:migrate
+rake db:seed
+ruby script/server -p 50000
+</pre>
+</notextile>
+
+Во второй консоли настраиваем и запускаем тест производительности:
+
+<notextile>
+<pre lang="bash">
+cd server
+rake db:create
+rake db:migrate
+rake test:benchmark
+</pre>
+</notextile>
+
+Результат тестового запуска на моей машине:
+
+<notextile>
+<pre lang="bash">
+Started
+BrowsingTest#test_post_with_nokogiri (4.11 sec warmup)
+           wall_time: 3.25 sec
+              memory: 0.00 KB
+             objects: 0
+             gc_runs: 0
+             gc_time: 0 ms
+.BrowsingTest#test_post_with_rexml (6.91 sec warmup)
+           wall_time: 6.58 sec
+              memory: 0.00 KB
+             objects: 0
+             gc_runs: 0
+             gc_time: 0 ms
+.
+Finished in 193.725 seconds.
+
+10 tests, 0 assertions, 0 failures, 0 errors
+</pre>
+</notextile>
+
+Для нас интересно значение @wall_time@, которое представляет собой время выполнения одного запроса.
+В это время входит:
+
+# Запрос к удаленному серверу
+# Запрос базы данных на удаленном сервере
+# Формирование XML-ответа
+# Передача XML-ответа
+# Разбор XML-ответа
+
+Пункты 2 и 3 вместе занимают у сервера-поставщика 1,2 секунды. С помощью включения простейшего кэширования[5]
+можно исключить эту задержку.
+
+h3. Заключение
+
+Использование библиотеки Nokogiri вместе с ActiveResource позволяет увеличить скорость обработки ответа
+приблизительно в 2 раза. Хороший результат при минимальном изменении исходного кода приложения.
 
 h3. Полезные ссылки
 
 fn1. "Документация по ActiveResource":http://api.rubyonrails.org/classes/ActiveResource/Base.html
 
 fn2. "Библиотека Nokogiri":http://nokogiri.org/
+
+fn3. "Исходные коды приложения-поставщика":http://github.com/Imomoi/blog.molokov.info/tree/master/2010-03-nokogiri-i-activeresource/remote-server/
+
+fn4. "Исходные коды приложения-потребителя":http://github.com/Imomoi/blog.molokov.info/tree/master/2010-03-nokogiri-i-activeresource/server
+
+fn5. "Кэширование в Ruby on Rails":http://guides.rubyonrails.org/caching_with_rails.html
