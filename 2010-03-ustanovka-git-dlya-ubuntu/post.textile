@@ -1,0 +1,12 @@
+﻿Для установки различных компонентов Ruby on Rails требуется клиент для системы управления версиями Git.
+
+В исходную поставку Ubuntu он не входит, поэтому просто установим его.
+
+Для этого выполним команду:
+
+<notextile><pre lang='bash'>sudo apt-get install git-core git-doc git-svn git-gui gitk</pre></notextile>
+
+Для проверки выполним следующую команду:
+
+<notextile><pre lang='bash'>git --version
+git version 1.7.0</pre></notextile>
