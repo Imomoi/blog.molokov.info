@@ -1,0 +1,27 @@
+﻿В данной статье мы исправим несовместимость между gem-ами devise[1] и mongo_mapper[2].
+
+Изменения в mongo_mapper 0.8.0 затронули devise, т.к. при регистрации ORM в нем происходит расширение
+модулей MongoMapper::Document::ClassMethods и MongoMapper::EmbeddedDocument::ClassMethods[3].
+
+В файле, предназначенном для инициализации mongo_mapper, добавим объявление недостающих модулей:
+
+<notextile><pre lang='ruby'>module MongoMapper::Document::ClassMethods; end
+module MongoMapper::EmbeddedDocument::ClassMethods; end</pre></notextile>
+
+Классы с моделями, которые должны работать с devise, необходимо расширить {{Devise::Models}}.
+
+<notextile><pre lang='ruby'>extend Devise::Models</pre></notextile>
+
+Например:
+
+<notextile><pre lang='ruby'>class User
+  include MongoMapper::Document
+  # Необходимо добавить строку ниже
+  extend Devise::Models
+  devise # режимы работы devise
+end</pre></notextile>
+
+h2. Ссылки
+fn1. "plataformatec's devise":http://github.com/plataformatec/devise/tree/v1.0.7
+fn2. "jnunemaker's mongomapper":http://http://github.com/jnunemaker/mongomapper/tree/v0.8.0
+fn3. "Расширение модулей mongo_mapper в devise (строки 47-48)":http://github.com/plataformatec/devise/blob/v1.0.7/lib/devise/orm/mongo_mapper.rb
