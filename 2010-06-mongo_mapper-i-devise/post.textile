@@ -24,6 +24,6 @@ h2. Ссылки
 
 fn1. "plataformatec's devise":http://github.com/plataformatec/devise/tree/v1.0.7
 
-fn2. "jnunemaker's mongomapper":http://http://github.com/jnunemaker/mongomapper/tree/v0.8.0
+fn2. "jnunemaker's mongomapper":http://github.com/jnunemaker/mongomapper/tree/v0.8.0
 
 fn3. "Расширение модулей mongo_mapper в devise (строки 47-48)":http://github.com/plataformatec/devise/blob/v1.0.7/lib/devise/orm/mongo_mapper.rb
