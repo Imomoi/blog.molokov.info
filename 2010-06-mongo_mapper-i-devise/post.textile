@@ -1,14 +1,13 @@
-﻿В данной статье мы исправим несовместимость между gem-ами devise[1] и mongo_mapper[2].
+﻿В данной статье мы исправим несовместимость между gem-ами @devise@[1] и @mongo_mapper@[2].
 
-Изменения в mongo_mapper 0.8.0 затронули devise, т.к. при регистрации ORM в нем происходит расширение
-модулей MongoMapper::Document::ClassMethods и MongoMapper::EmbeddedDocument::ClassMethods[3].
+Изменения в @mongo_mapper@ 0.8.0 затронули devise, т.к. при регистрации ORM в нем происходит расширение модулей @MongoMapper::Document::ClassMethods@ и @MongoMapper::EmbeddedDocument::ClassMethods@[3].
 
-В файле, предназначенном для инициализации mongo_mapper, добавим объявление недостающих модулей:
+В файле, предназначенном для инициализации @mongo_mapper@, добавим объявление недостающих модулей:
 
 <notextile><pre lang='ruby'>module MongoMapper::Document::ClassMethods; end
 module MongoMapper::EmbeddedDocument::ClassMethods; end</pre></notextile>
 
-Классы с моделями, которые должны работать с devise, необходимо расширить {{Devise::Models}}.
+Классы с моделями, которые должны работать с @devise@, необходимо расширить @Devise::Models@.
 
 <notextile><pre lang='ruby'>extend Devise::Models</pre></notextile>
 
